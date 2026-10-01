@@ -1,5 +1,5 @@
-N = "99" # Tu número de clase
-iniciales = "TUS-INICIALES"
+N = "8" # Tu número de clase
+iniciales = "DSR"
 
 Vagrant.configure("2") do |config|
 
@@ -13,6 +13,8 @@ Vagrant.configure("2") do |config|
     gw.vm.network "private_network", ip: "172.1.#{N}.1", netmask: "255.255.255.0", virtualbox__intnet: "red_dmz" 
     # eth3: LAN
     gw.vm.network "private_network", ip: "172.2.#{N}.1", netmask: "255.255.255.0", virtualbox__intnet: "red_lan"
+    # eth4: LAN de gestion o intranet
+    gw.vm.network "private_network", ip: "172.3.#{N}.1", netmask: "255.255.255.0", virtualbox__intnet: "red_gestion"
     gw.vm.provision "shell", path: "gw/provision.sh"   
     gw.vm.provider "virtualbox" do |vb|
         vb.name = "gw"
@@ -29,12 +31,12 @@ Vagrant.configure("2") do |config|
   config.vm.define "idp" do |idp|
     idp.vm.box = "bento/ubuntu-24.04"
     idp.vm.hostname = "idp-#{iniciales}"
-    idp.vm.network "private_network", ip: "172.2.#{N}.2", netmask: "255.255.255.0", virtualbox__intnet: "red_lan"
+    idp.vm.network "private_network", ip: "172.3.#{N}.2", netmask: "255.255.255.0", virtualbox__intnet: "red_gestion"
     idp.vm.provision "shell", path: "idp/provision.sh"
     # eliminar default gw en eth0 – red NAT creada por defecto
     idp.vm.provision "shell",
         run: "always",
-        inline:  "ip route del default && ip route add default via 172.2.#{N}.1"       
+        inline:  "ip route del default && ip route add default via 172.3.#{N}.1"       
     idp.vm.provider "virtualbox" do |vb|
         vb.name = "idp-lan"
         vb.gui = false
