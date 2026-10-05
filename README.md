@@ -5,7 +5,7 @@ Este es mi Proyecto de prueba de SAD (Seguridad y Alta Disponibilidad) en 2º AS
 # 1. Estructura
 ----------------------
 
-![](![Estrutura](image.png))
+![](![Estrutura](../Música/RED.png)
 
 **1. Gateway y Enrutador (gw)**
 Actúa como router central, cortafuegos (iptables/nftables) y nodo VPN. Separa físicamente (mediante redes internas
