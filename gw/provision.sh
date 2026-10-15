@@ -3,7 +3,7 @@
 # El script se detiene si hay errores
 set -e
 export DEBIAN_FRONTEND=noninteractive
-echo "########################################"
+echo "########################################"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 echo " Aprovisionando Gateway "
 echo "########################################"
 echo "-----------------"
