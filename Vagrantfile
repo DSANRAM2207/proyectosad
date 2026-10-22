@@ -52,6 +52,13 @@ Vagrant.configure("2") do |config|
     adminpc.vm.box = "generic/alpine319"
     adminpc.vm.hostname = "adminpc-#{iniciales}"
     adminpc.vm.network "private_network", ip: "172.2.#{N}.10", netmask: "255.255.255.0", virtualbox__intnet: "red_lan"
+    
+    # Dentro de config.vm.define "adminpc" do |adminpc|
+    adminpc.vm.provision "file", source: "adminpc/claves-ssh/clave_admin_privada",
+    destination: "/tmp/id_ed25519"
+    adminpc.vm.provision "file", source: "adminpc/claves-ssh/clave_admin.pub",
+    destination: "/tmp/id_ed25519.pub"
+    
     adminpc.vm.provision "shell", path: "adminpc/provision.sh"
     # eliminar default gw en eth0 – red NAT creada por defecto
     adminpc.vm.provision "shell",
@@ -112,6 +119,11 @@ Vagrant.configure("2") do |config|
     www.vm.box = "generic/alpine319"
     www.vm.hostname = "www-#{iniciales}"
     www.vm.network "private_network", ip: "172.1.#{N}.3", netmask: "255.255.255.0", virtualbox__intnet: "red_dmz" 
+    
+    # Dentro de config.vm.define "www" do |www|
+    www.vm.provision "file", source: "adminpc/claves-ssh/clave_admin.pub", destination: 
+    "/tmp/id_ed25519.pub"
+    
     www.vm.provision "shell", path: "www/provision.sh"
     # eliminar default gw en eth0 – red NAT creada por defecto
     www.vm.provision "shell",

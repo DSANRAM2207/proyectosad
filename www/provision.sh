@@ -82,3 +82,23 @@ rc-service php-fpm81 restart
 rc-service nginx restart
 
 echo "------ FIN ------"
+
+# Deja lo que ya tenías y añade esto
+echo "=> Blindando acceso SSH en WWW..."
+# Crear el usuario (Alpine)
+apk add sudo
+adduser -D admin_Dsanram2207
+# sin esta línea, ssh no te dejará loguearte
+passwd -u admin_Dsanram2207
+adduser admin_Dsanram2207 wheel
+echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel
+# Copiamos la clave autorizada inyectada por Vagrant en /tmp
+mkdir -p /home/admin_Dsanram2207/.ssh
+cat /tmp/id_ed25519.pub >> /home/admin_Dsanram2207/.ssh/authorized_keys
+chown -R admin_Dsanram2207:admin_Dsanram2207 /home/admin_Dsanram2207/.ssh
+chmod 700 /home/admin_Dsanram2207/.ssh
+chmod 600 /home/admin_Dsanram2207/.ssh/authorized_keys
+# Hacemos hardening del servidor SSH
+sed -i 's/^.*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
+sed -i 's/^.*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
+rc-service sshd restart
