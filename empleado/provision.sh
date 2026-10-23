@@ -7,6 +7,6 @@ echo " Aprovisionando cliente "
 echo "########################################"
 echo "-----------------"
 echo "Actualizando repositorios"
-apk update
-apk add curl nmap tcpdump wget bash iputils
+apt update
+apt install -y curl nmap tcpdump wget bash iputils-ping
 echo "------ FIN ------"
