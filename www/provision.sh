@@ -1,104 +1,102 @@
-#!/bin/sh
-
+#!/usr/bin/env bash
+# El script se detiene si hay errores
+set -e
+export DEBIAN_FRONTEND=noninteractive
 echo "########################################"
 echo "Aprovisionando WWW"
 echo "########################################"
-
-# 1. Limpieza y actualización
-apk update
-apk del apache2 apache2-ssl apache2-utils php81-apache2 2>/dev/null
-killall httpd 2>/dev/null
-
-# 2. Instalación de Nginx, OpenSSL y PHP 8.1
-# Instalamos php81-fpm (el motor) y php81 (el lenguaje)
-apk add nginx openssl php81 php81-fpm php81-opcache php81-gd php81-mysqli php81-curl php81-json
-
-# 3. Certificados SSL (Igual que antes)
+# 1. Actualización
+apt-get update -y
+# 2. Nginx, OpenSSL y PHP (php-fpm instala la versión de la distribución: 8.4 en
+Debian 13)
+apt-get install -y nginx openssl php-fpm php-opcache php-gd php-mysql php-curl
+PHPV=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
+# 3. Certificado autofirmado (en una próxima unidad lo firmará la CA de la empresa)
 mkdir -p /etc/ssl/private /etc/ssl/certs
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout /etc/ssl/private/nginx-selfsigned.key \
-  -out /etc/ssl/certs/nginx-selfsigned.crt \
-  -subj "/C=ES/ST=Almeria/L=Almeria/O=IES_CELIA_VINAS/OU=IT/CN=localhost"
-
-# 4. Configuración de Nginx para soportar PHP
-rm -f /etc/nginx/http.d/default.conf
-
-cat <<EOF > /etc/nginx/http.d/servidor_web.conf
+ -keyout /etc/ssl/private/nginx-selfsigned.key \
+Seguridad y Alta disponibilidad (SAD) – 2º ASIR Página 7 de 36
+Seguridad y Alta disponibilidad (SAD) Unidad 3
+ -out /etc/ssl/certs/nginx-selfsigned.crt \
+ -subj "/C=ES/ST=Almeria/L=Almeria/O=IES_CELIA_VINAS/OU=IT/CN=localhost"
+# 4. Sitio web. En Debian se escribe en sites-available y se activa con un enlace en
+sites-enabled
+rm -f /etc/nginx/sites-enabled/default
+cat <<'NGINX' > /etc/nginx/sites-available/servidor_web
 server {
-    listen 80;
-    listen [::]:80;
-    listen 443 ssl;
-    listen [::]:443 ssl;
-
-    server_name localhost;
-
-    ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
-    ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
-
-    root /var/www/localhost/htdocs;
-    index index.php index.html;
-
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
-
-    # Configuración para procesar archivos PHP
-    location ~ \.php$ {
-        fastcgi_pass 127.0.0.1:9000;
-        fastcgi_index index.php;
-        include fastcgi.conf;
-    }
+ listen 80;
+ listen [::]:80;
+ listen 443 ssl;
+ listen [::]:443 ssl;
+ server_name localhost;
+ ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
+ ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+ root /var/www/html;
+ index index.php index.html;
+ location / {
+ try_files $uri $uri/ =404;
+ }
+ # PHP: php-fpm escucha en un socket Unix
+ location ~ \.php$ {
+ include snippets/fastcgi-php.conf;
+ fastcgi_pass unix:/run/php/php-fpm.sock;
+ }
 }
-EOF
-
-# 5. Configurar PHP-FPM para que escuche correctamente
-# Por defecto en Alpine suele venir configurado, pero aseguramos permisos
-sed -i 's/user = nobody/user = nginx/g' /etc/php81/php-fpm.d/www.conf
-sed -i 's/group = nobody/group = nginx/g' /etc/php81/php-fpm.d/www.conf
-
-# 6. Preparar el directorio web y archivo de prueba PHP
-mkdir -p /var/www/localhost/htdocs
-cat > /var/www/localhost/htdocs/index.php << 'EOF'
+NGINX
+ln -sf /etc/nginx/sites-available/servidor_web /etc/nginx/sites-enabled/servidor_web
+# 5. Limitamos los procesos de PHP para no agotar los 400 MB de RAM
+sed -i 's/^pm.max_children = .*/pm.max_children = 3/' /etc/php/$PHPV/fpm/pool.d/www.
+conf
+# 6. Página de prueba
+rm -f /var/www/html/index.nginx-debian.html
+cat > /var/www/html/index.php << 'HTML'
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Servidor WWW - DMZ</title>
+ <meta charset="UTF-8">
+ <title>Servidor WWW - DMZ</title>
 </head>
 <body>
-    <h1>¡Hola! Estás en el servidor WWW</h1>
-    <p>Dirección IP del servidor: <?php echo $_SERVER['SERVER_ADDR']; ?></p>
-    <p><a href="info.php">Ver PHP Info</a></p>
+ <h1>¡Hola! Estás en el servidor WWW</h1>
+ <p>Dirección IP del servidor: <?php echo $_SERVER['SERVER_ADDR']; ?></p>
+ <p><a href="info.php">Ver PHP Info</a></p>
 </body>
 </html>
-EOF
-echo "<?php phpinfo(); ?>" > /var/www/localhost/htdocs/info.php
-chown -R nginx:nginx /var/www/localhost/htdocs
-
-# 7. Iniciar los servicios
-rc-update add nginx default
-rc-update add php-fpm81 default
-rc-service php-fpm81 restart
-rc-service nginx restart
-
-echo "------ FIN ------"
-
-# Deja lo que ya tenías y añade esto
-echo "=> Blindando acceso SSH en WWW..."
-# Crear el usuario (Alpine)
-apk add sudo
-adduser -D admin_Dsanram2207
-# sin esta línea, ssh no te dejará loguearte
-passwd -u admin_Dsanram2207
-adduser admin_Dsanram2207 wheel
-echo "%wheel ALL=(ALL) ALL" > /etc/sudoers.d/wheel
-# Copiamos la clave autorizada inyectada por Vagrant en /tmp
+HTML
+echo "<?php phpinfo(); ?>" > /var/www/html/info.php
+Seguridad y Alta disponibilidad (SAD) – 2º ASIR Página 8 de 36
+Seguridad y Alta disponibilidad (SAD) Unidad 3
+chown -R www-data:www-data /var/www/html
+# 7. Arrancar los servicios (nginx -t comprueba la configuración antes)
+nginx -t
+systemctl enable php$PHPV-fpm nginx
+systemctl restart php$PHPV-fpm nginx
+echo "=> Blindando acceso SSH en www... "
+# Cuenta de emergencia: sin contraseña, solo se entra con clave SSH
+id admin_tu_nombre >/dev/null 2>&1 || useradd -m -s /bin/bash admin_tu_nombre
+usermod -aG sudo admin_Dsanram2207
+# Clave pública de adminpc
 mkdir -p /home/admin_Dsanram2207/.ssh
-cat /tmp/id_ed25519.pub >> /home/admin_Dsanram2207/.ssh/authorized_keys
+sed 's/\r$//' /tmp/id_ed25519.pub > /home/admin_Dsanram2207/.ssh/authorized_keys
 chown -R admin_Dsanram2207:admin_Dsanram2207 /home/admin_Dsanram2207/.ssh
 chmod 700 /home/admin_Dsanram2207/.ssh
 chmod 600 /home/admin_Dsanram2207/.ssh/authorized_keys
-# Hacemos hardening del servidor SSH
-sed -i 's/^.*PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
-sed -i 's/^.*PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config
-rc-service sshd restart
+# Bastionado de SSH en un fichero propio (se lee antes que sshd_config: manda el
+primer valor)
+cat > /etc/ssh/sshd_config.d/00-bastionado.conf <<'EOF'
+PermitRootLogin no
+PasswordAuthentication no
+EOF
+# test de la configuración
+sshd -t
+systemctl restart ssh
+
+# eth0 es la NAT de Vagrant: solo la queremos para que Vagrant entre por SSH.
+# dhcpcd no debe poner rutas por defecto (ni IPv4 ni IPv6) por ella: todo sale por el
+gw.
+grep -q '^interface eth0' /etc/dhcpcd.conf || cat >> /etc/dhcpcd.conf <<'EOF'
+interface eth0
+nogateway
+EOF
+
+echo "------ FIN ------"
