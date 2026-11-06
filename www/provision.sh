@@ -7,20 +7,19 @@ echo "Aprovisionando WWW"
 echo "########################################"
 # 1. Actualización
 apt-get update -y
-# 2. Nginx, OpenSSL y PHP (php-fpm instala la versión de la distribución: 8.4 en
-Debian 13)
+
+# 2. Nginx, OpenSSL y PHP (php-fpm instala la versión de la distribución: 8.4 en Debian 13)
 apt-get install -y nginx openssl php-fpm php-opcache php-gd php-mysql php-curl
 PHPV=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')
+
 # 3. Certificado autofirmado (en una próxima unidad lo firmará la CA de la empresa)
 mkdir -p /etc/ssl/private /etc/ssl/certs
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
  -keyout /etc/ssl/private/nginx-selfsigned.key \
-Seguridad y Alta disponibilidad (SAD) – 2º ASIR Página 7 de 36
-Seguridad y Alta disponibilidad (SAD) Unidad 3
  -out /etc/ssl/certs/nginx-selfsigned.crt \
  -subj "/C=ES/ST=Almeria/L=Almeria/O=IES_CELIA_VINAS/OU=IT/CN=localhost"
-# 4. Sitio web. En Debian se escribe en sites-available y se activa con un enlace en
-sites-enabled
+
+# 4. Sitio web. En Debian se escribe en sites-available y se activa con un enlace en sites-enabled
 rm -f /etc/nginx/sites-enabled/default
 cat <<'NGINX' > /etc/nginx/sites-available/servidor_web
 server {
@@ -45,8 +44,8 @@ server {
 NGINX
 ln -sf /etc/nginx/sites-available/servidor_web /etc/nginx/sites-enabled/servidor_web
 # 5. Limitamos los procesos de PHP para no agotar los 400 MB de RAM
-sed -i 's/^pm.max_children = .*/pm.max_children = 3/' /etc/php/$PHPV/fpm/pool.d/www.
-conf
+sed -i 's/^pm.max_children = .*/pm.max_children = 3/' /etc/php/$PHPV/fpm/pool.d/www.conf
+
 # 6. Página de prueba
 rm -f /var/www/html/index.nginx-debian.html
 cat > /var/www/html/index.php << 'HTML'
@@ -64,39 +63,41 @@ cat > /var/www/html/index.php << 'HTML'
 </html>
 HTML
 echo "<?php phpinfo(); ?>" > /var/www/html/info.php
-Seguridad y Alta disponibilidad (SAD) – 2º ASIR Página 8 de 36
-Seguridad y Alta disponibilidad (SAD) Unidad 3
 chown -R www-data:www-data /var/www/html
+
 # 7. Arrancar los servicios (nginx -t comprueba la configuración antes)
 nginx -t
 systemctl enable php$PHPV-fpm nginx
 systemctl restart php$PHPV-fpm nginx
 echo "=> Blindando acceso SSH en www... "
+
 # Cuenta de emergencia: sin contraseña, solo se entra con clave SSH
-id admin_tu_nombre >/dev/null 2>&1 || useradd -m -s /bin/bash admin_tu_nombre
+id admin_Dsanram2207 >/dev/null 2>&1 || useradd -m -s /bin/bash admin_Dsanram2207
 usermod -aG sudo admin_Dsanram2207
+
 # Clave pública de adminpc
 mkdir -p /home/admin_Dsanram2207/.ssh
 sed 's/\r$//' /tmp/id_ed25519.pub > /home/admin_Dsanram2207/.ssh/authorized_keys
 chown -R admin_Dsanram2207:admin_Dsanram2207 /home/admin_Dsanram2207/.ssh
 chmod 700 /home/admin_Dsanram2207/.ssh
 chmod 600 /home/admin_Dsanram2207/.ssh/authorized_keys
-# Bastionado de SSH en un fichero propio (se lee antes que sshd_config: manda el
-primer valor)
+
+# Bastionado de SSH en un fichero propio (se lee antes que sshd_config: manda el primer valor)
 cat > /etc/ssh/sshd_config.d/00-bastionado.conf <<'EOF'
 PermitRootLogin no
 PasswordAuthentication no
 EOF
+
 # test de la configuración
 sshd -t
 systemctl restart ssh
 
 # eth0 es la NAT de Vagrant: solo la queremos para que Vagrant entre por SSH.
-# dhcpcd no debe poner rutas por defecto (ni IPv4 ni IPv6) por ella: todo sale por el
-gw.
-grep -q '^interface eth0' /etc/dhcpcd.conf || cat >> /etc/dhcpcd.conf <<'EOF'
-interface eth0
-nogateway
+# dhcpcd no debe poner rutas por defecto (ni IPv4 ni IPv6) por ella: todo sale por el gw.
+grep -q '^interface eth0' /etc/dhcpcd.conf || cat >> /etc/dhcpcd.conf <<'EOF' 
+
+interface eth0 
+nogateway 
 EOF
 
 echo "------ FIN ------"
