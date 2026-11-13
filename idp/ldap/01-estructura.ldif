@@ -1,0 +1,8 @@
+# Unidades organizativas de la empresa
+dn: ou=usuarios,dc=dsr,dc=internal
+objectClass: organizationalUnit
+ou: usuarios
+
+dn: ou=grupos,dc=dsr,dc=internal
+objectClass: organizationalUnit
+ou: grupos

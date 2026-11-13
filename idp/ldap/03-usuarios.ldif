@@ -1,0 +1,31 @@
+# Administrador de sistemas
+dn: uid=david.sanchez,ou=usuarios,dc=dsr,dc=internal
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+uid: david.sanchez
+cn: David Sanchez
+sn: Sanchez
+givenName: David
+mail: david.sanchez@dsr.internal
+uidNumber: 10001
+gidNumber: 10000
+homeDirectory: /home/david.sanchez
+loginShell: /bin/bash
+userPassword: {SSHA}cjV2bHU5VnNyAf1bwd+nC1xi6q2iUtCc
+
+# Empleado
+dn: uid=luis.martin,ou=usuarios,dc=dsr,dc=internal
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: top
+uid: luis.martin
+cn: Luis Martín
+sn: Martín
+givenName: Luis
+mail: luis.martin@dsr.internal
+uidNumber: 10002
+gidNumber: 10000
+homeDirectory: /home/luis.martin
+loginShell: /bin/bash
+userPassword: {SSHA}ttdDoZlmXxT2vxH5KGp9W5KVK561a7UL
