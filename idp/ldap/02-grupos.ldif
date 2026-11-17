@@ -12,5 +12,3 @@ objectClass: posixGroup
 cn: admins
 gidNumber: 10001
 memberUid: david.sanchez
-
-ff

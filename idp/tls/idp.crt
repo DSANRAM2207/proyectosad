@@ -1,0 +1,87 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            0e:67:18:4e:00:47:ef:71:79:bc:72:4c:96:bc:89:c4
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: CN=CA Empresa DSR
+        Validity
+            Not Before: Nov 13 13:15:52 2026 GMT
+            Not After : Feb 15 13:15:52 2029 GMT
+        Subject: CN=idp-dsr
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:a0:3a:91:ee:4e:73:b8:5a:71:60:ab:52:3d:44:
+                    27:12:b4:9e:e7:2e:c5:8f:af:0b:0a:7c:a8:33:19:
+                    cc:0a:95:1c:5a:48:ec:e6:fc:67:02:d0:d3:32:26:
+                    fb:e6:73:e5:11:37:fb:c6:63:9f:36:cc:f1:b6:a0:
+                    73:5b:47:59:72:8f:af:28:7b:f4:18:b7:1b:35:b1:
+                    b7:6b:b0:f7:a4:59:23:d6:b6:43:70:11:0e:51:6b:
+                    2f:ef:fe:0e:d4:80:32:ab:e8:4f:f9:ef:de:da:c0:
+                    76:6c:f4:61:ae:d3:45:27:e4:7a:00:5b:b1:d6:e4:
+                    19:14:7b:f0:2d:d0:83:2e:6c:c5:ca:8f:2a:7b:d9:
+                    2f:14:30:4c:95:69:26:a4:5c:e8:08:63:54:a7:fb:
+                    b4:e7:ba:01:94:90:41:18:ce:2e:59:a7:34:b4:f3:
+                    0a:10:3d:e2:43:f7:ed:7a:b5:40:b7:9e:5e:ea:f3:
+                    ec:46:9c:00:fe:64:e3:b9:1a:bb:9d:5c:fa:21:4e:
+                    af:32:24:fe:56:38:c8:6f:33:6e:6d:7c:27:cc:7d:
+                    55:cd:e4:3d:79:70:28:d9:d3:26:dc:8d:dc:7d:16:
+                    82:d0:bf:b2:09:9b:7a:e6:a9:bd:fa:5c:cb:e0:86:
+                    44:17:45:aa:75:32:d0:f3:53:c1:51:5d:6f:86:c1:
+                    04:4d
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                B6:CA:6B:D4:37:1C:77:1D:10:76:A1:1C:F2:EB:49:A9:17:C1:6B:AA
+            X509v3 Authority Key Identifier: 
+                keyid:AE:66:20:78:6F:80:DC:2F:9A:D0:D4:85:5D:12:CA:30:36:C7:EB:11
+                DirName:/CN=CA Empresa DSR
+                serial:6D:FD:E2:57:73:43:C4:17:EA:56:98:BF:49:4B:DA:FA:4C:82:CD:E0
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Key Usage: 
+                Digital Signature, Key Encipherment
+            X509v3 Subject Alternative Name: 
+                IP Address:172.3.8.2, DNS:idp-dsr
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        28:f6:7f:19:08:2a:ca:61:fe:50:c2:74:7e:bc:ce:1c:33:f1:
+        2d:c1:05:93:0a:ed:fb:9f:a5:0a:1d:72:ad:af:87:e9:3e:8a:
+        2c:2b:10:8c:ef:4d:f3:e7:91:d5:a2:b8:c5:ae:25:4a:49:f2:
+        aa:6b:2b:ee:c2:54:ad:49:81:e8:7d:b3:f8:a5:62:54:2e:38:
+        af:3c:96:51:0c:8a:ff:6d:de:92:a0:2c:40:36:6d:0d:9a:b7:
+        55:a1:ee:3e:7b:a2:d0:6f:5d:fc:34:1a:93:27:32:c5:24:e3:
+        d9:2d:c3:cf:57:97:79:fd:a2:f8:96:51:26:e2:dd:24:8f:ad:
+        8f:9f:53:14:44:22:54:6c:3f:39:02:1b:5b:4c:4a:88:82:12:
+        85:a2:62:2d:3b:39:48:eb:3b:d8:77:5e:e0:76:50:52:78:18:
+        30:9c:81:db:f5:2c:d7:23:fe:8f:84:b8:31:d3:b9:71:01:29:
+        e6:f7:8f:3d:3e:72:8e:df:0d:e3:8d:fd:ba:d9:d7:32:f6:51:
+        fd:c0:bf:34:34:cc:01:dd:7f:df:04:38:26:14:ad:15:73:ba:
+        da:09:84:65:98:0f:07:4d:b7:10:19:e4:22:d0:86:b8:02:fc:
+        6c:7a:0c:7a:18:f0:50:aa:06:de:90:d0:9c:20:0c:d0:f9:b2:
+        c9:5b:c8:17
+-----BEGIN CERTIFICATE-----
+MIIDdTCCAl2gAwIBAgIQDmcYTgBH73F5vHJMlryJxDANBgkqhkiG9w0BAQsFADAZ
+MRcwFQYDVQQDDA5DQSBFbXByZXNhIERTUjAeFw0yNjExMTMxMzE1NTJaFw0yOTAy
+MTUxMzE1NTJaMBIxEDAOBgNVBAMMB2lkcC1kc3IwggEiMA0GCSqGSIb3DQEBAQUA
+A4IBDwAwggEKAoIBAQCgOpHuTnO4WnFgq1I9RCcStJ7nLsWPrwsKfKgzGcwKlRxa
+SOzm/GcC0NMyJvvmc+URN/vGY582zPG2oHNbR1lyj68oe/QYtxs1sbdrsPekWSPW
+tkNwEQ5Ray/v/g7UgDKr6E/5797awHZs9GGu00Un5HoAW7HW5BkUe/At0IMubMXK
+jyp72S8UMEyVaSakXOgIY1Sn+7TnugGUkEEYzi5ZpzS08woQPeJD9+16tUC3nl7q
+8+xGnAD+ZOO5GrudXPohTq8yJP5WOMhvM25tfCfMfVXN5D15cCjZ0ybcjdx9FoLQ
+v7IJm3rmqb36XMvghkQXRap1MtDzU8FRXW+GwQRNAgMBAAGjgb8wgbwwCQYDVR0T
+BAIwADAdBgNVHQ4EFgQUtspr1Dccdx0QdqEc8utJqRfBa6owVAYDVR0jBE0wS4AU
+rmYgeG+A3C+a0NSFXRLKMDbH6xGhHaQbMBkxFzAVBgNVBAMMDkNBIEVtcHJlc2Eg
+RFNSghRt/eJXc0PEF+pWmL9JS9r6TILN4DATBgNVHSUEDDAKBggrBgEFBQcDATAL
+BgNVHQ8EBAMCBaAwGAYDVR0RBBEwD4cErAMIAoIHaWRwLWRzcjANBgkqhkiG9w0B
+AQsFAAOCAQEAKPZ/GQgqymH+UMJ0frzOHDPxLcEFkwrt+5+lCh1yra+H6T6KLCsQ
+jO9N8+eR1aK4xa4lSknyqmsr7sJUrUmB6H2z+KViVC44rzyWUQyK/23ekqAsQDZt
+DZq3VaHuPnui0G9d/DQakycyxSTj2S3Dz1eXef2i+JZRJuLdJI+tj59TFEQiVGw/
+OQIbW0xKiIIShaJiLTs5SOs72Hde4HZQUngYMJyB2/Us1yP+j4S4MdO5cQEp5veP
+PT5yjt8N4439utnXMvZR/cC/NDTMAd1/3wQ4JhStFXO62gmEZZgPB023EBnkItCG
+uAL8bHoMehjwUKoG3pDQnCAM0PmyyVvIFw==
+-----END CERTIFICATE-----

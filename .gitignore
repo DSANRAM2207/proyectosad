@@ -8,3 +8,7 @@ Thumbs.db
 *~
 .env
 /adminpc/claves-ssh
+
+# Práctica 3: secretos que NUNCA se suben a Git
+idp/tls/idp.key
+idp/ca/
