@@ -1,0 +1,9 @@
+# Clave pública SSH del administrador (la misma de adminpc/claves-ssh/clave_admin.pub)
+dn: uid=pablo.esteban,ou=usuarios,dc=dsr,dc=internal
+changetype: modify
+add: objectClass
+objectClass: ldapPublicKey
+-
+add: sshPublicKey
+sshPublicKey: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA...resto-de-tu-clave...
+admin_Dsanram2207@adminpc
